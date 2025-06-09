@@ -1,0 +1,16 @@
+MetaNodeVersion: "0.0.1.0"
+DnsLink_: "http://127.0.0.1:7080/api/dns/connection-address/"
+
+NodeConnectionAddress: "node"
+ParentConnectionAddress: "0.0.0.0:4200"
+ParentConnectionType: "client"
+ConnectionAddress_: "0x1eF5a8c5403c5aA1d43a8DC9eD391351012551Cf"
+ChainId: 991
+
+StorageAddress: "da7284faC5E804F8b9d71Aa39310f0f86776b51d"
+StorageConnectionAddress: "storage"
+
+RpcURL: "http://localhost:8545"
+AdminAddress: "0xB50b908fFd42d2eDb12b325e75330c1AaAf35dc0"
+PrivateKeyAdmin : "2b3aa0f620d2d73c046cd93eb64f2eb687a95b22e278500aa251c8c9dda1203b"
+CodeAddress: "0x2636ab805769FE59F52542741C7b16f9d99111d4"
