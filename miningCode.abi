@@ -1,0 +1,633 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_keyContractAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_codeContract",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "CodeActivated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes32",
+				"name": "commitHash",
+				"type": "bytes32"
+			}
+		],
+		"name": "CodeCommitted",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "creator",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "boostRate",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "maxDuration",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "expireTime",
+				"type": "uint256"
+			}
+		],
+		"name": "CodeGenned",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "replacer",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "newBoostRate",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "newMaxDuration",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "newExpireTime",
+				"type": "uint256"
+			}
+		],
+		"name": "CodeReplaced",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "REVEAL_DELAY",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "TIME_MINING",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_privateCode",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes",
+				"name": "_secret",
+				"type": "bytes"
+			}
+		],
+		"name": "activateCode",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "cancelCommit",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "claim",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "codeContract",
+		"outputs": [
+			{
+				"internalType": "contract ICode",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_commitHash",
+				"type": "bytes32"
+			}
+		],
+		"name": "commitActivationCode",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "commits",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "commitHash",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256",
+				"name": "commitTime",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "indexCode",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_hashedPrivateCode",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_hashedPublicCode",
+				"type": "bytes32"
+			}
+		],
+		"name": "genCode",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "getActivePrivateCode",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "device",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "boostRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "maxDuration",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "showroom",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "ref_1",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "ref_2",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "ref_3",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "ref_4",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "activeTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expireTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "privateCode",
+						"type": "bytes32"
+					}
+				],
+				"internalType": "struct MiningCodeSC.DataCode[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "halvingCount",
+		"outputs": [
+			{
+				"internalType": "uint8",
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_hashedPublicCode",
+				"type": "bytes32"
+			}
+		],
+		"name": "isCodeValid",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "keyContract",
+		"outputs": [
+			{
+				"internalType": "contract PublicKeyFromPrivateKey",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "mActivePrivateCodes",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "privateCode",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "activeTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct MiningCodeSC.MigrateData[]",
+				"name": "datas",
+				"type": "tuple[]"
+			}
+		],
+		"name": "migrateAmount",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "miningPrivateCodes",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "device",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "boostRate",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "maxDuration",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "showroom",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "ref_1",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "ref_2",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "ref_3",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "ref_4",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "activeTime",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "expireTime",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "privateCode",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "miningPublicCodes",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "miningUser",
+		"outputs": [
+			{
+				"internalType": "contract IMiningUser",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_privateCode",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes",
+				"name": "_secret",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_hashedPrivateCode",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_hashedPublicCode",
+				"type": "bytes32"
+			}
+		],
+		"name": "replaceCode",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_codeContract",
+				"type": "address"
+			}
+		],
+		"name": "setCodeContract",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_halvingReward",
+				"type": "uint256"
+			}
+		],
+		"name": "setHalvingReward",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_miningDeviceAddress",
+				"type": "address"
+			}
+		],
+		"name": "setMiningDevice",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_miningUserAddress",
+				"type": "address"
+			}
+		],
+		"name": "setMiningUser",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "minutes_",
+				"type": "uint256"
+			}
+		],
+		"name": "setTimeMiningInMinutes",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

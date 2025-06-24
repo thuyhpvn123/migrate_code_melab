@@ -373,11 +373,6 @@
 				"internalType": "bool",
 				"name": "transferable",
 				"type": "bool"
-			},
-			{
-				"internalType": "uint256",
-				"name": "expireTime",
-				"type": "uint256"
 			}
 		],
 		"name": "createCodeDirect",
@@ -474,30 +469,6 @@
 				"internalType": "bytes[]",
 				"name": "",
 				"type": "bytes[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes",
-				"name": "code",
-				"type": "bytes"
-			}
-		],
-		"name": "getIndexOfCode",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -649,11 +620,6 @@
 						"internalType": "enum LockType",
 						"name": "lockType",
 						"type": "uint8"
-					},
-					{
-						"internalType": "uint256",
-						"name": "expireTime",
-						"type": "uint256"
 					}
 				],
 				"internalType": "struct MiningCode[]",
@@ -725,11 +691,6 @@
 				"internalType": "enum LockType",
 				"name": "lockType",
 				"type": "uint8"
-			},
-			{
-				"internalType": "uint256",
-				"name": "expireTime",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -771,11 +732,6 @@
 				"internalType": "bool",
 				"name": "transferable",
 				"type": "bool"
-			},
-			{
-				"internalType": "uint256",
-				"name": "expireTime",
-				"type": "uint256"
 			}
 		],
 		"name": "requestCode",

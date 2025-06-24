@@ -6,9 +6,11 @@ import (
 	"log"
 	"math/big"
 	"os"
+	"os/signal"
 	"strings"
-	"github.com/360EntSecGroup-Skylar/excelize"
+	"syscall"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/meta-node-blockchain/meta-node/cmd/client"
 	c_config "github.com/meta-node-blockchain/meta-node/cmd/client/pkg/config"
@@ -30,12 +32,17 @@ type MiningCode struct {
     Transferable bool
     LockUntil *big.Int
     LockType uint8
-    
+    ExpireTime *big.Int
 }
-
+type MiningAmount struct {
+	User common.Address
+	PrivateCode [32]byte
+	ActiveTime *big.Int
+	Amount *big.Int
+}
 func main() {
     // 1. Load Excel file
-    file, err := excelize.OpenFile("listCode_melab.xlsx")
+    file, err := excelize.OpenFile("listCode_melab_21.6.xlsx")
     if err != nil {
         log.Fatalf("Failed to open Excel file: %v", err)
     }
@@ -50,7 +57,7 @@ func main() {
 			PrivateKey_:             config.PrivateKeyAdmin,
 			ParentAddress:           config.AdminAddress,
 			ParentConnectionAddress: config.ParentConnectionAddress,
-			DnsLink_:                config.DnsLink(),
+			// DnsLink_:                config.DnsLink(),
 			ConnectionAddress_:      config.ConnectionAddress_,
 			ParentConnectionType:    config.ParentConnectionType,
 			ChainId:                 config.ChainId,
@@ -67,10 +74,11 @@ func main() {
 	}
 	defer reader.Close()
 
-	abi, err := abi.JSON(reader)
+	abiCode, err := abi.JSON(reader)
 	if err != nil {
 		logger.Error("Error occured while parse create Code smart contract abi")
 	}
+
 
     // 4. Prepare MiningCode slice
     var miningCodes []MiningCode
@@ -86,16 +94,22 @@ func main() {
             continue
         }
 
-        if len(row) < 4 {
-            log.Printf("Skipping incomplete row %d", idx+1)
+        if len(row) < 6 {
+           log.Printf("Skipping incomplete row %d: only %d columns", idx+1, len(row))
             continue
         }
 
         userAddr := common.HexToAddress(row[0])
         codeHashHex := row[1]
-        maxDuration, ok := new(big.Int).SetString(row[2], 10)
+		fmt.Println("row[2]",row[2])
+		maxDurationHex := strings.TrimSpace(row[2])
+		if maxDurationHex == "" {
+			log.Printf("Skipping row %d: empty ExpirationActiveTime", idx+1)
+			continue
+		}
+        maxDuration, ok := new(big.Int).SetString(maxDurationHex, 10)
         if !ok {
-            log.Printf("Invalid ExpirationActiveTime at row %d", idx+1)
+			fmt.Printf("row %d raw ExpirationActiveTime: '%s'\n", idx+1, row[2])
             continue
         }
         boostRate, ok := new(big.Int).SetString(row[3], 10)
@@ -103,7 +117,12 @@ func main() {
             log.Printf("Invalid RateBoost at row %d", idx+1)
             continue
         }
-
+        expireTime, ok := new(big.Int).SetString(row[4], 10)
+        if !ok {
+            log.Printf("Invalid ExpireTime at row %d", idx+1)
+            continue
+        }
+	
         // Convert codeHash from hex string to [32]byte
         codeHashBytes := common.Hex2Bytes(strings.TrimPrefix(codeHashHex, "0x"))
         miningCodes = append(miningCodes, MiningCode{
@@ -116,12 +135,15 @@ func main() {
             Transferable: false,
             LockUntil: big.NewInt(0),
             LockType: 0,
-
+			ExpireTime: expireTime,
         })
+
+		
+
     }
 
     // 6. Call migrateCode
-    input, err := abi.Pack(
+    input, err := abiCode.Pack(
 		"migrateCode",
 		miningCodes,
 	)
@@ -153,12 +175,125 @@ func main() {
 	)
 	if receipt.Status() == pb.RECEIPT_STATUS_RETURNED {
 		result := make(map[string]interface{})
-		err := abi.UnpackIntoMap(result, "migrateCode", receipt.Return())
+		err := abiCode.UnpackIntoMap(result, "migrateCode", receipt.Return())
 		if err != nil {
 			logger.Error(fmt.Sprintf("UnpackIntoMap error for %s", "migrateCode"), err)
 		}
 	}
 	fmt.Println( hex.EncodeToString(receipt.Return()))
+	logger.Error("Done1")
+	
+	//2.call miningcode
+	var miningAmounts []MiningAmount
+	    // Skip header
+    for idx, row := range rows {
+        if idx == 0 {
+            continue
+        }
 
+        if len(row) < 6 {
+            log.Printf("Skipping incomplete row %d", idx+1)
+            continue
+        }
+
+        userAddr := common.HexToAddress(row[0])
+        privateCodeHex := row[1]
+		fmt.Println("row[5]:",row[5])
+
+		amountStr := strings.TrimSpace(row[5])
+		amountFloat := new(big.Float)
+		_, ok := amountFloat.SetString(amountStr)
+		if !ok {
+			log.Printf("Invalid float format at row %d: %s", idx+1, amountStr)
+			continue
+		}
+
+		// Convert *big.Float → *big.Int (bằng cách lấy phần nguyên)
+		amount := new(big.Int)
+		amountFloat.Int(amount) // Cắt phần thập phân
+
+        activeTime, ok := new(big.Int).SetString(row[2], 10)
+        if !ok {
+            log.Printf("Invalid activeTime at row %d", idx+1)
+            continue
+        }
+			// Chuyển hex string thành bytes
+		privateCodeBytes, err := hex.DecodeString(privateCodeHex)
+		if err != nil {
+			log.Fatal("Lỗi decode hex:", err)
+		}
+		
+		// Kiểm tra độ dài (32 bytes)
+		if len(privateCodeBytes) != 32 {
+			log.Fatal("Độ dài không đúng, cần 32 bytes nhưng có:", len(privateCodeBytes))
+		}
+		
+		// Tạo bytes32 array
+		var privateCodeBytes32 [32]byte
+		copy(privateCodeBytes32[:], privateCodeBytes)
+        // Convert codeHash from hex string to [32]byte
+        miningAmounts = append(miningAmounts, MiningAmount{
+            User:   userAddr,
+            PrivateCode:   privateCodeBytes32,
+            ActiveTime: activeTime,
+            Amount : amount,
+        })
+    }
+
+    // 6. Call migrateCode
+	readerMiningCode, err := os.Open("miningCode.abi")
+	if err != nil {
+		logger.Error("Error occured while read create Code smart contract abi")
+	}
+	defer reader.Close()
+
+	abiMiningCode, err := abi.JSON(readerMiningCode)
+	if err != nil {
+		logger.Error("Error occured while parse create MiningCode smart contract abi")
+	}
+
+    input, err = abiMiningCode.Pack(
+		"migrateAmount",
+		miningAmounts,
+	)
+	if err != nil {
+		logger.Error("error when pack call data", err)
+		panic(err)
+	}
+    callData = transaction.NewCallData(input)
+
+	bData, err = callData.Marshal()
+	if err != nil {
+		logger.Error(fmt.Sprintf("Marshal calldata for %s failed", "migrateCode"), err)
+	}
+
+	receipt, err = client.SendTransactionWithDeviceKey(
+		common.HexToAddress(config.AdminAddress),
+		common.HexToAddress(config.MiningCodeAddress),
+		big.NewInt(0),
+		bData,
+		relatedAddress,
+		maxGas,
+		maxGasPrice,
+		timeUse,
+	)
+	if receipt.Status() == pb.RECEIPT_STATUS_RETURNED {
+		result := make(map[string]interface{})
+		err := abiMiningCode.UnpackIntoMap(result, "migrateAmount", receipt.Return())
+		if err != nil {
+			logger.Error(fmt.Sprintf("UnpackIntoMap error for %s", "migrateAmount"), err)
+		}
+	}
+	fmt.Println( hex.EncodeToString(receipt.Return()))
+	logger.Error("Done2")
+
+	sigs := make(chan os.Signal, 1)
+	done := make(chan struct{})
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigs
+		close(done)
+	}()
+	<-done
 }
 

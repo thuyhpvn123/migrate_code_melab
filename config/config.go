@@ -16,6 +16,7 @@ type AppConfig struct {
 	StorageAddress        string
 
 	CodeAddress string
+	MiningCodeAddress string
 
 	ParentConnectionAddress  string
 	ParentConnectionType     string
@@ -42,26 +43,6 @@ func LoadConfig(path string) (*AppConfig, error) {
 	Config = &config
 	return &config, nil
 }
-
-// func (c *AppConfig) Version() string {
-// 	return c.MetaNodeVersion
-// }
-//
-// func (c *AppConfig) NodeType() string {
-// 	return "explorer"
-// }
-
-// func (c *AppConfig) PrivateKey() []byte {
-// 	return common.FromHex(c.WalletPrivateKey)
-// }
-
-// func (c *AppConfig) PublicConnectionAddress() string {
-// 	return c.SocketPublicConnectionAddress
-// }
-
-// func (c *AppConfig) ConnectionAddress() string {
-// 	return c.SocketConnectionAddress
-// }
 
 func (c *AppConfig) DnsLink() string {
 	return c.DnsLink_
