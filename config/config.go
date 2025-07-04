@@ -15,8 +15,7 @@ type AppConfig struct {
 	NodeConnectionAddress string
 	StorageAddress        string
 
-	CodeAddress string
-	MiningCodeAddress string
+	MigrateSCAddress string
 
 	ParentConnectionAddress  string
 	ParentConnectionType     string

@@ -12,5 +12,4 @@ StorageConnectionAddress: "storage"
 
 AdminAddress: "0xB50b908fFd42d2eDb12b325e75330c1AaAf35dc0"
 PrivateKeyAdmin : "2b3aa0f620d2d73c046cd93eb64f2eb687a95b22e278500aa251c8c9dda1203b"
-CodeAddress: "0xc0aF2F5CF5f33004b13ba71c244872BFD62Ff33F"
-MiningCodeAddress: "0x6495fB8b6FfCCF640Cf27280E24D5c1e59ccDeEf"
+MigrateSCAddress: "0xe345279b094CF6ad41c8C17989d44c6678220906"
