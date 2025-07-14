@@ -68,9 +68,19 @@
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isMigrated",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "boostRate",
+						"type": "uint256"
 					}
 				],
-				"internalType": "struct MigrateDataSC.MigrateDataUser[]",
+				"internalType": "struct MigrateDataUser[]",
 				"name": "dataUsers",
 				"type": "tuple[]"
 			}
@@ -101,6 +111,11 @@
 				"internalType": "uint256",
 				"name": "_index",
 				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_hashDeviceId",
+				"type": "bytes32"
 			}
 		],
 		"name": "FEMigrate",
@@ -116,6 +131,51 @@
 				"internalType": "contract ICode",
 				"name": "",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAllMigrateDataUsers",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "maxDuration",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "assignedTo",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "activeTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isMigrated",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "boostRate",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct MigrateDataUser[]",
+				"name": "",
+				"type": "tuple[]"
 			}
 		],
 		"stateMutability": "view",
@@ -152,9 +212,19 @@
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isMigrated",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "boostRate",
+						"type": "uint256"
 					}
 				],
-				"internalType": "struct MigrateDataSC.MigrateDataUser[]",
+				"internalType": "struct MigrateDataUser[]",
 				"name": "",
 				"type": "tuple[]"
 			}
@@ -238,6 +308,16 @@
 			{
 				"internalType": "uint256",
 				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "isMigrated",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "boostRate",
 				"type": "uint256"
 			}
 		],
@@ -394,6 +474,16 @@
 			{
 				"internalType": "uint256",
 				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "isMigrated",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "boostRate",
 				"type": "uint256"
 			}
 		],
